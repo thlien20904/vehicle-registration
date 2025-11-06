@@ -1,18 +1,19 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "D:\\HK1_2025_2026\\Blockchain\\Blockchain_IPFS_QuanLyGiayPhepKinhDoanh-main\\backend\\contracts\\LicenseManagement.sol": {
-      "lastModificationDate": 1762360930726,
-      "contentHash": "161838331187ae8c53fa38ed4f70a21f",
-      "sourceName": "contracts/LicenseManagement.sol",
+    "D:\\HK1_2025_2026\\Blockchain\\vehicle-registration-blockchain\\backend\\contracts\\VehicleRegistration.sol": {
+      "lastModificationDate": 1762436012121,
+      "contentHash": "b938d03c130d967b7438aba6dc716cec",
+      "sourceName": "contracts/VehicleRegistration.sol",
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
-          "evmVersion": "paris",
           "optimizer": {
-            "enabled": false,
+            "enabled": true,
             "runs": 200
           },
+          "viaIR": true,
+          "evmVersion": "paris",
           "outputSelection": {
             "*": {
               "*": [
@@ -34,7 +35,7 @@
         "^0.8.19"
       ],
       "artifacts": [
-        "LicenseManagement"
+        "VehicleRegistration"
       ]
     }
   }

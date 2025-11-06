@@ -2,15 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import { contractAddress, contractABI } from "./config";
-import { ipfsClient } from "./ipfsClient";
-import SubmitLicenseForm from "./components/SubmitLicenseForm";
+import SubmitVehicleForm from "./components/SubmitVehicleForm";
 import "./App.css";
 
-// Enum trạng thái giấy phép (đồng bộ với smart contract)
 const StatusMap = {
   0: "CHỜ DUYỆT",
   1: "ĐÃ DUYỆT",
-  2: "BỊ TỪ CHỐI",
+  2: "TỪ CHỐI",
 };
 
 function App() {
@@ -18,21 +16,14 @@ function App() {
   const [signer, setSigner] = useState(null);
   const [account, setAccount] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
-  const [licenses, setLicenses] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 1. Kết nối ví Metamask
+  // 🌐 Kết nối ví Metamask
   const connectWallet = useCallback(async () => {
-    const web3Modal = new Web3Modal({
-      network: "hardhat", // hoặc "localhost" nếu bạn chạy node local
-      cacheProvider: true,
-    });
-
     try {
+      const web3Modal = new Web3Modal({ cacheProvider: true });
       const connection = await web3Modal.connect();
-      console.log("-> Đã kết nối Web3Modal.");
-      console.log("Connection object:", connection);
-
       const newProvider = new ethers.providers.Web3Provider(connection);
       const newSigner = newProvider.getSigner();
       const newAccount = await newSigner.getAddress();
@@ -41,101 +32,96 @@ function App() {
       setSigner(newSigner);
       setAccount(newAccount);
 
-      // Kiểm tra địa chỉ admin trong contract
       const contract = new ethers.Contract(
         contractAddress,
         contractABI,
         newProvider
       );
-
       const adminAddress = await contract.adminAddress();
-      console.log("Địa chỉ Metamask:", newAccount);
-      console.log("Địa chỉ Admin từ Contract:", adminAddress);
-
       setIsAdmin(newAccount.toLowerCase() === adminAddress.toLowerCase());
-    } catch (error) {
-      console.error("❌ Lỗi kết nối ví:", error);
-      alert(
-        "Không thể kết nối ví! Vui lòng kiểm tra Metamask hoặc mạng Hardhat."
-      );
+
+      console.log("✅ Ví đã kết nối:", newAccount);
+      console.log("👑 Admin:", adminAddress);
+    } catch (err) {
+      console.error("❌ Lỗi kết nối ví:", err);
+      alert("Không thể kết nối ví. Kiểm tra Metamask.");
     }
   }, []);
 
-  // 🔹 2. Lấy danh sách giấy phép
-  const fetchLicenses = useCallback(async () => {
+  // 📄 Lấy danh sách phương tiện
+  const fetchVehicles = useCallback(async () => {
     if (!provider) return;
     setLoading(true);
-
     try {
       const contract = new ethers.Contract(
         contractAddress,
         contractABI,
         provider
       );
-      const ids = await contract.getAllLicenseIds();
-      const licenseDetails = await Promise.all(
-        ids.map((id) => contract.licenses(id))
+      const ids = await contract.getAllVehicleIds();
+      const details = await Promise.all(
+        ids.map(async (id) => {
+          const v = await contract.vehicles(id);
+          return {
+            id: parseInt(v.vehicleId.toString()),
+            ownerName: v.ownerInfo.fullName,
+            citizenId: v.ownerInfo.cccd,
+            address: v.ownerInfo.addressInfo,
+            phone: v.ownerInfo.phone,
+            licensePlate: v.licensePlate,
+            brand: v.brand,
+            model: v.model,
+            color: v.color,
+            year: parseInt(v.manufactureYear.toString()),
+            ipfsHash: v.documentIpfsHash,
+            status: StatusMap[parseInt(v.status.toString())],
+            owner: v.walletAddress,
+            reviewer: v.reviewer,
+          };
+        })
       );
-
-      setLicenses(
-        licenseDetails.map((l) => ({
-          id: l.licenseId.toNumber(),
-          companyName: l.companyName,
-          companyAddress: l.companyAddress,
-          ipfsHash: l.documentIpfsHash,
-          status: StatusMap[l.status],
-          submitter: l.submitter,
-          reviewer: l.reviewer,
-        }))
-      );
-    } catch (error) {
-      console.error("❌ Lỗi khi tải giấy phép:", error);
+      setVehicles(details);
+    } catch (err) {
+      console.error("❌ Lỗi tải danh sách phương tiện:", err);
     } finally {
       setLoading(false);
     }
   }, [provider]);
 
-  // 🔹 3. Admin duyệt giấy phép
-  const reviewLicense = async (licenseId, isApproved) => {
+  // ✅ Admin duyệt / từ chối hồ sơ
+  const reviewVehicle = async (vehicleId, isApproved) => {
     if (!signer || !isAdmin) return;
     const newStatus = isApproved ? 1 : 2;
-
     try {
       const contract = new ethers.Contract(
         contractAddress,
         contractABI,
         signer
       );
-      const tx = await contract.reviewLicense(licenseId, newStatus);
+      const tx = await contract.reviewVehicle(vehicleId, newStatus);
       await tx.wait();
-
       alert(
-        `✅ Giấy phép ID ${licenseId} đã được ${
-          isApproved ? "DUYỆT" : "TỪ CHỐI"
-        }.`
+        `✅ Hồ sơ xe #${vehicleId} đã được ${isApproved ? "DUYỆT" : "TỪ CHỐI"}`
       );
-
-      await fetchLicenses();
-    } catch (error) {
-      console.error("❌ Lỗi khi duyệt giấy phép:", error);
-      alert("Lỗi giao dịch! Đảm bảo bạn là Admin và mạng đang chạy.");
+      await fetchVehicles();
+    } catch (err) {
+      console.error("❌ Lỗi duyệt hồ sơ:", err);
+      alert("Giao dịch thất bại. Kiểm tra quyền Admin hoặc mạng.");
     }
   };
 
-  // Khởi tạo
   useEffect(() => {
     connectWallet();
   }, [connectWallet]);
-
   useEffect(() => {
-    if (provider) fetchLicenses();
-  }, [provider, fetchLicenses]);
+    if (provider) fetchVehicles();
+  }, [provider, fetchVehicles]);
 
-  // 🔹 Giao diện khi chưa kết nối ví
+  // 🚀 Nếu chưa kết nối ví
   if (!account) {
     return (
       <div className="container connect-section">
-        <h1 className="main-title">Quản Lý Cấp Phép Kinh Doanh</h1>
+        <h1 className="main-title">Hệ Thống Đăng Ký Phương Tiện</h1>
         <button className="connect-btn" onClick={connectWallet}>
           Kết nối Metamask
         </button>
@@ -143,89 +129,106 @@ function App() {
     );
   }
 
-  // 🔹 Giao diện User (không phải admin)
+  // 🧍 Giao diện người dùng
   if (!isAdmin) {
     return (
-      <div className="container">
-        <h1>Cổng Nộp Hồ Sơ Kinh Doanh</h1>
+      <div className="container user-section">
+        <h1>Cổng Đăng Ký Phương Tiện</h1>
         <p>
-          Tài khoản hiện tại: <strong>{account}</strong> (Vai trò: User)
+          Tài khoản: <strong>{account}</strong> (Người dùng)
         </p>
-        <SubmitLicenseForm
+        <SubmitVehicleForm
           signer={signer}
           account={account}
-          onSubmission={fetchLicenses}
+          onSubmission={fetchVehicles}
           provider={provider}
         />
       </div>
     );
   }
 
-  // 🔹 Giao diện Admin
+  // 👑 Giao diện Admin
   return (
     <div className="admin-container">
-      <h1 className="admin-title">Dashboard Kiểm Duyệt Giấy Phép</h1>
-
-      <div className="admin-info">
-        <p>
-          Tài khoản Admin: <strong>{account}</strong>
-        </p>
-        <p>Vai trò: ADMIN</p>
-      </div>
-
-      <h2>Danh Sách Giấy Phép ({licenses.length})</h2>
-
+      <h1>Quản Lý Hồ Sơ Phương Tiện</h1>
+      <p>
+        Admin: <strong>{account}</strong>
+      </p>
+      <h2>Danh Sách Hồ Sơ ({vehicles.length})</h2>
       {loading ? (
-        <p>Đang tải...</p>
+        <p>Đang tải dữ liệu...</p>
       ) : (
         <table className="license-table">
           <thead>
             <tr>
               <th>ID</th>
-              <th>Tên Công Ty / Địa chỉ</th>
-              <th>IPFS</th>
+              <th>Chủ xe</th>
+              <th>CCCD</th>
+              <th>Biển số</th>
+              <th>Xe</th>
+              <th>Màu</th>
+              <th>Năm</th>
               <th>Trạng thái</th>
-              <th>Người gửi</th>
+              <th>Tài liệu</th>
               <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
-            {licenses.map((l) => (
-              <tr key={l.id}>
-                <td>{l.id}</td>
+            {vehicles.map((v) => (
+              <tr key={v.id}>
+                <td>{v.id}</td>
+                <td>{v.ownerName}</td>
+                <td>{v.citizenId}</td>
+                <td>{v.licensePlate}</td>
                 <td>
-                  <strong>{l.companyName}</strong>
-                  <br />
-                  <small>{l.companyAddress}</small>
+                  {v.brand} {v.model}
+                </td>
+                <td>{v.color}</td>
+                <td>{v.year}</td>
+                <td
+                  style={{
+                    color:
+                      v.status === "ĐÃ DUYỆT"
+                        ? "green"
+                        : v.status === "TỪ CHỐI"
+                        ? "red"
+                        : "orange",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {v.status}
                 </td>
                 <td>
                   <a
-                    href={`http://127.0.0.1:8080/ipfs/${l.ipfsHash}`}
+                    href={`https://ipfs.io/ipfs/${v.ipfsHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     Xem
                   </a>
                 </td>
-                <td>{l.status}</td>
-                <td>{l.submitter.substring(0, 8)}...</td>
                 <td>
-                  {l.status === "CHỜ DUYỆT" ? (
+                  {v.status === "CHỜ DUYỆT" ? (
                     <>
-                      <button onClick={() => reviewLicense(l.id, true)}>
+                      <button
+                        className="btn-approve"
+                        onClick={() => reviewVehicle(v.id, true)}
+                      >
                         Duyệt
                       </button>
-                      <button onClick={() => reviewLicense(l.id, false)}>
+                      <button
+                        className="btn-reject"
+                        onClick={() => reviewVehicle(v.id, false)}
+                      >
                         Từ chối
                       </button>
                     </>
                   ) : (
-                    <span>
-                      Đã xử lý:{" "}
-                      {l.reviewer.substring(0, 8) !== "0x000000"
-                        ? l.reviewer.substring(0, 8) + "..."
+                    <small>
+                      {v.reviewer !== ethers.constants.AddressZero
+                        ? v.reviewer.substring(0, 8) + "..."
                         : "N/A"}
-                    </span>
+                    </small>
                   )}
                 </td>
               </tr>

@@ -1,0 +1,554 @@
+/* ========== RESET CƠ BẢN ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #181a1f;
+  color: #f0f0f0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 30px;
+}
+
+/* ========== KHUNG CHUNG ========== */
+/* ========== KHUNG CHUNG ========== */
+.container {
+  width: 100vw; /* chiếm toàn bộ chiều ngang trình duyệt */
+  max-width: none; /* bỏ giới hạn */
+  padding: 0 60px; /* chỉ chừa mép nhỏ hai bên */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 60px;
+}
+
+/* ========== FORM ĐĂNG KÝ ========== */
+.form-section,
+.admin-container {
+  width: 100%; /* full ngang vùng container */
+  max-width: 1800px; /* tránh quá rộng trên màn cực lớn */
+  background: #202225;
+  border-radius: 20px;
+  padding: 50px 60px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+}
+
+.form-section:hover {
+  transform: translateY(-3px);
+}
+.main-title {
+  text-align: center;
+  color: #4facfe;
+  font-size: 2rem;
+  font-weight: 700;
+
+  margin-bottom: 25px;
+  text-shadow: 0 0 8px rgba(79, 172, 254, 0.4);
+}
+
+.vehicle-form h4 {
+  color: #4facfe;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-left: none !important;
+  padding-left: 10px;
+  margin: 25px 0 10px 0;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+/* --- INPUT --- */
+.vehicle-form input,
+.vehicle-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background-color: #2a2d33;
+  color: #f0f0f0;
+  font-size: 15px;
+  outline: none;
+  transition: 0.25s ease;
+}
+
+.vehicle-form input:focus,
+.vehicle-form select:focus {
+  border: 1px solid #4facfe;
+  box-shadow: 0 0 5px rgba(79, 172, 254, 0.4);
+}
+
+/* --- LỖI --- */
+.error {
+  color: #ff5252;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* --- NÚT GỬI --- */
+.vehicle-form button {
+  width: 100%;
+  padding: 14px 0;
+  margin-top: 20px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #4facfe, #338af2);
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.vehicle-form button:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(90deg, #338af2, #4facfe);
+}
+
+.vehicle-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== UPLOAD CCCD ========== */
+.cccd-container {
+  display: flex;
+  flex-wrap: nowrap !important; /* luôn 1 hàng */
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  width: 100%;
+  overflow-x: auto; /* nếu màn hình nhỏ thì cho cuộn ngang thay vì xuống hàng */
+}
+.cccd-upload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  width: 100%;
+}
+
+.cccd-upload .upload-box {
+  width: 360px;
+  height: 220px;
+}
+
+.upload-box {
+  flex: 0 0 auto; /* giữ kích thước cố định, không co */
+  width: 360px;
+  height: 220px;
+}
+
+/* khung mỗi ảnh */
+.upload-box {
+  position: relative;
+  width: 320px;
+  height: 200px;
+  border: 2px dashed #888; /* viền nét đứt */
+  border-radius: 16px;
+  background-color: #2a2d31;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+/* hover hiệu ứng sáng */
+.upload-box:hover {
+  border-color: #00aaff;
+  transform: scale(1.02);
+}
+
+/* ảnh trong khung */
+.upload-box img,
+.upload-box .preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+/* nút x */
+.upload-box .remove-btn {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  width: 26px !important;
+  height: 26px !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #fff !important;
+  border: none !important;
+  outline: none !important;
+  border-radius: 50% !important;
+  z-index: 10 !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+}
+
+.upload-box .remove-btn:hover {
+  background: rgba(255, 0, 0, 0.8) !important;
+}
+
+/* ========== ẢNH XEM TRƯỚC ========== */
+.preview-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ✅ Ảnh vừa khung, không méo, không tràn */
+  border-radius: 14px;
+}
+
+/* ========== NÚT ❌ XÓA ẢNH ========== */
+/* Fix nút X bị nền xanh + căn sai */
+.remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  font-size: 13px;
+
+  background: rgba(0, 0, 0, 0.6) !important; /* xóa nền xanh, nền tối nhẹ */
+  color: white !important;
+  border: none !important;
+  outline: none !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 5; /* đảm bảo nằm trên ảnh */
+  transition: background 0.2s ease;
+}
+
+.remove-btn:hover {
+  background: rgba(255, 0, 0, 0.7) !important;
+}
+
+/* ========== NÚT UPLOAD TRỐNG ========== */
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+}
+
+.upload-label input {
+  display: none;
+}
+
+.plus {
+  font-size: 40px;
+  color: #888;
+}
+
+/* ========== ADMIN (LỊCH SỬ HỒ SƠ) ========== */
+.admin-container {
+  width: 160%;
+  max-width: 1520px;
+  background: #202225;
+  padding: 45px 60px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  margin-bottom: 70px;
+}
+
+.admin-title {
+  text-align: center;
+  color: #4facfe;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+/* ========== BẢNG DỮ LIỆU ========== */
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  margin-top: 15px;
+  background: #2a2d33;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  padding: 10px;
+}
+
+.license-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  font-size: 16px;
+}
+
+.license-table th,
+.license-table td {
+  padding: 16px 22px;
+}
+.license-table thead {
+  background: #2f3238;
+  color: #4facfe;
+}
+
+.license-table th {
+  text-align: left;
+  padding: 12px 18px;
+  font-weight: 600;
+  border-bottom: 2px solid #3a3d42;
+}
+
+.license-table tbody tr {
+  background: #22252b;
+  transition: all 0.25s ease;
+}
+
+.license-table tbody tr:hover {
+  background: rgba(79, 172, 254, 0.1);
+  transform: scale(1.01);
+}
+
+.license-table td {
+  padding: 14px 18px;
+  border: none;
+  color: #e0e0e0;
+}
+
+.license-table td:first-child {
+  text-align: center;
+  width: 60px;
+  color: #bbb;
+}
+
+/* --- TRẠNG THÁI DẠNG BADGE --- */
+.status-cell {
+  text-align: center;
+}
+
+.status-cell span {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 60;
+}
+
+.status-cell .pending {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+.status-cell .approved {
+  background: rgba(0, 230, 118, 0.15);
+  color: #00e676;
+}
+
+.status-cell .rejected {
+  background: rgba(255, 82, 82, 0.15);
+  color: #ff5252;
+}
+
+/* --- NÚT XEM CHI TIẾT --- */
+.license-table button {
+  background: transparent;
+  color: #4facfe;
+  border: 1px solid #4facfe;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.license-table button:hover {
+  background: #4facfe;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(79, 172, 254, 0.6);
+  transform: translateY(-2px);
+}
+
+/* ========== MODAL CHI TIẾT ========== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #1f2228;
+  border-radius: 14px;
+  padding: 30px 40px;
+  color: #eaeaea;
+  width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  text-align: left;
+  position: relative;
+}
+
+.modal-title {
+  text-align: center;
+  color: #4facfe;
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.modal-section {
+  margin-bottom: 15px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 10px 15px;
+  background: #25282e;
+}
+
+.modal-section h4 {
+  color: #4facfe;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal-section p {
+  margin: 3px 0;
+  font-size: 14px;
+}
+
+.modal-divider {
+  height: 1px;
+  background: #333;
+  margin: 12px 0;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: #bbb;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #ff5252;
+}
+
+.ipfs-link {
+  display: inline-block;
+  color: #4facfe;
+  text-decoration: none;
+  margin-top: 5px;
+}
+
+.ipfs-link:hover {
+  text-decoration: underline;
+}
+.document-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ipfs-link {
+  display: inline-block;
+  background: rgba(79, 172, 254, 0.1);
+  border: 1px solid rgba(79, 172, 254, 0.4);
+  color: #4facfe;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.ipfs-link:hover {
+  background: #4facfe;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+  transform: translateY(-2px);
+}
+
+/* ========== BADGE TRẠNG THÁI TRONG CHI TIẾT ========== */
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* ==== Màu trạng thái trong bảng lịch sử hồ sơ ==== */
+.status-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* các màu riêng */
+.status-chờduyệt .status-badge {
+  background-color: orange;
+}
+
+.status-đãduyệt .status-badge {
+  background-color: green;
+}
+
+.status-từchối .status-badge {
+  background-color: red;
+}
+
+body,
+.container,
+.form-section,
+.admin-container {
+  width: 110% !important;
+  max-width: none !important;
+  margin-left: -4.5% !important; /* dịch ngược sang trái 1 nửa phần thừa */
+  padding-left: 60px !important;
+  padding-right: 60px !important;
+}
+html,
+body {
+  overflow-x: hidden !important; /* ẩn thanh cuộn ngang */
+}
