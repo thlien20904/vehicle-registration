@@ -3,6 +3,8 @@ import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import { contractAddress, contractABI } from "./config";
 import SubmitVehicleForm from "./components/SubmitVehicleForm";
+import AdminVehicleTable from "./components/AdminVehicleTable"; // Import mới
+import VehicleDetailModal from "./components/vehicle/VehicleDetailModal"; // Import modal chung
 import "./App.css";
 
 const StatusMap = {
@@ -18,6 +20,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedVehicle, setSelectedVehicle] = useState(null); // State modal cho admin
 
   // 🌐 Kết nối ví Metamask
   const connectWallet = useCallback(async () => {
@@ -65,17 +68,16 @@ function App() {
           return {
             id: parseInt(v.vehicleId.toString()),
             ownerName: v.ownerInfo.fullName,
-            citizenId: v.ownerInfo.cccd,
-            address: v.ownerInfo.addressInfo,
-            phone: v.ownerInfo.phone,
+            cccd: v.ownerInfo.cccd, // ← Đổi từ citizenId thành cccd            addressInfo: v.ownerInfo.addressInfo, // Thêm cho modal
+            phone: v.ownerInfo.phone, // Thêm cho modal
             licensePlate: v.licensePlate,
             brand: v.brand,
             model: v.model,
             color: v.color,
-            year: parseInt(v.manufactureYear.toString()),
-            ipfsHash: v.documentIpfsHash,
+            manufactureYear: parseInt(v.manufactureYear.toString()), // Đổi tên cho khớp modal
+            documentIpfsHash: v.documentIpfsHash, // Đổi tên cho khớp modal (split thành 3)
             status: StatusMap[parseInt(v.status.toString())],
-            owner: v.walletAddress,
+            walletAddress: v.walletAddress, // Thêm nếu cần
             reviewer: v.reviewer,
           };
         })
@@ -147,95 +149,24 @@ function App() {
     );
   }
 
-  // 👑 Giao diện Admin
+  // 👑 Giao diện Admin (giống user: modal + bảng gọn)
   return (
     <div className="admin-container">
+      <VehicleDetailModal
+        vehicle={selectedVehicle}
+        onClose={() => setSelectedVehicle(null)}
+      />
       <h1>Quản Lý Hồ Sơ Phương Tiện</h1>
       <p>
         Admin: <strong>{account}</strong>
       </p>
-      <h2>Danh Sách Hồ Sơ ({vehicles.length})</h2>
-      {loading ? (
-        <p>Đang tải dữ liệu...</p>
-      ) : (
-        <table className="license-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Chủ xe</th>
-              <th>CCCD</th>
-              <th>Biển số</th>
-              <th>Xe</th>
-              <th>Màu</th>
-              <th>Năm</th>
-              <th>Trạng thái</th>
-              <th>Tài liệu</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vehicles.map((v) => (
-              <tr key={v.id}>
-                <td>{v.id}</td>
-                <td>{v.ownerName}</td>
-                <td>{v.citizenId}</td>
-                <td>{v.licensePlate}</td>
-                <td>
-                  {v.brand} {v.model}
-                </td>
-                <td>{v.color}</td>
-                <td>{v.year}</td>
-                <td
-                  style={{
-                    color:
-                      v.status === "ĐÃ DUYỆT"
-                        ? "green"
-                        : v.status === "TỪ CHỐI"
-                        ? "red"
-                        : "orange",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {v.status}
-                </td>
-                <td>
-                  <a
-                    href={`https://ipfs.io/ipfs/${v.ipfsHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Xem
-                  </a>
-                </td>
-                <td>
-                  {v.status === "CHỜ DUYỆT" ? (
-                    <>
-                      <button
-                        className="btn-approve"
-                        onClick={() => reviewVehicle(v.id, true)}
-                      >
-                        Duyệt
-                      </button>
-                      <button
-                        className="btn-reject"
-                        onClick={() => reviewVehicle(v.id, false)}
-                      >
-                        Từ chối
-                      </button>
-                    </>
-                  ) : (
-                    <small>
-                      {v.reviewer !== ethers.constants.AddressZero
-                        ? v.reviewer.substring(0, 8) + "..."
-                        : "N/A"}
-                    </small>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <AdminVehicleTable
+        vehicles={vehicles}
+        loading={loading}
+        selectedVehicle={selectedVehicle}
+        setSelectedVehicle={setSelectedVehicle}
+        reviewVehicle={reviewVehicle}
+      />
     </div>
   );
 }

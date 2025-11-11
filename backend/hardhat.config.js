@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
-require("dotenv").config(); // Nếu bạn muốn dùng biến môi trường
+require("@nomicfoundation/hardhat-verify"); // để verify contract trên Etherscan
+require("dotenv").config(); // đọc biến môi trường từ file .env
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
         enabled: true,
         runs: 200,
       },
-      viaIR: true, // bật Intermediate Representation giúp tránh "stack too deep"
+      viaIR: true, // giúp tránh lỗi "stack too deep"
     },
   },
   networks: {
@@ -23,5 +24,13 @@ module.exports = {
       accounts: [process.env.PRIVATE_KEY],
       chainId: 31337,
     },
+    sepolia: {
+      url: process.env.SEPOLIA_RPC_URL, // từ file .env
+      accounts: [process.env.PRIVATE_KEY], // private key ví của bạn
+      chainId: 11155111, // ID của Sepolia
+    },
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY, // dùng để verify contract
   },
 };
