@@ -30,10 +30,9 @@ body {
 }
 
 /* ========== FORM ĐĂNG KÝ ========== */
-.form-section,
-.admin-container {
-  width: 100%; /* full ngang vùng container */
-  max-width: 1800px; /* tránh quá rộng trên màn cực lớn */
+.form-section {
+  width: 100%;
+  max-width: 1400px;
   background: #202225;
   border-radius: 20px;
   padding: 50px 60px;
@@ -268,21 +267,21 @@ body {
   color: #888;
 }
 
-/* ========== ADMIN (LỊCH SỬ HỒ SƠ) ========== */
-.admin-container {
-  width: 160%;
-  max-width: 1520px;
+/* ========== LỊCH SỬ HỒ SƠ USER ========== */
+.history-section {
+  width: 100%;
+  max-width: 1400px;
   background: #202225;
-  padding: 45px 60px;
+  padding: 40px 50px;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
-  margin-bottom: 70px;
+  margin: 30px auto;
 }
 
-.admin-title {
+.history-title {
   text-align: center;
   color: #4facfe;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   font-weight: 700;
   margin-bottom: 25px;
 }
@@ -297,49 +296,42 @@ body {
   padding: 10px;
 }
 
-.license-table {
+.history-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 12px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
-.license-table th,
-.license-table td {
-  padding: 16px 22px;
+.history-table th,
+.history-table td {
+  padding: 12px 18px;
 }
-.license-table thead {
+
+.history-table thead {
   background: #2f3238;
   color: #4facfe;
 }
 
-.license-table th {
+.history-table th {
   text-align: left;
-  padding: 12px 18px;
   font-weight: 600;
   border-bottom: 2px solid #3a3d42;
 }
 
-.license-table tbody tr {
+.history-table tbody tr {
   background: #22252b;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
 }
 
-.license-table tbody tr:hover {
-  background: rgba(79, 172, 254, 0.1);
-  transform: scale(1.01);
+.history-table tbody tr:hover {
+  background: rgba(79, 172, 254, 0.08);
 }
 
-.license-table td {
-  padding: 14px 18px;
+.history-table td {
+  padding: 12px 18px;
   border: none;
   color: #e0e0e0;
-}
-
-.license-table td:first-child {
-  text-align: center;
-  width: 60px;
-  color: #bbb;
 }
 
 /* --- TRẠNG THÁI DẠNG BADGE --- */
@@ -370,27 +362,23 @@ body {
   color: #ff5252;
 }
 
-/* --- NÚT XEM CHI TIẾT --- */
-.license-table button {
+/* --- NÚT XEM CHI TIẾT USER TABLE --- */
+.history-table button {
   background: transparent;
   color: #4facfe;
   border: 1px solid #4facfe;
   padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  transition: all 0.25s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  transition: all 0.2s ease;
 }
 
-.license-table button:hover {
+.history-table button:hover {
   background: #4facfe;
   color: #fff;
-  box-shadow: 0 0 8px rgba(79, 172, 254, 0.6);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 /* ========== MODAL CHI TIẾT ========== */
@@ -538,17 +526,11 @@ body {
   background-color: red;
 }
 
-body,
-.container,
-.form-section,
-.admin-container {
-  width: 110% !important;
-  max-width: none !important;
-  margin-left: -4.5% !important; /* dịch ngược sang trái 1 nửa phần thừa */
-  padding-left: 60px !important;
-  padding-right: 60px !important;
-}
-html,
-body {
-  overflow-x: hidden !important; /* ẩn thanh cuộn ngang */
+/* Chỉ áp dụng cho phần user form, không ảnh hưởng admin */
+.user-section .container,
+.user-section .form-section {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 60px;
 }

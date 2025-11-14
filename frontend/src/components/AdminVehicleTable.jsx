@@ -8,14 +8,14 @@ const AdminVehicleTable = ({
   reviewVehicle,
 }) => {
   return (
-    <div className="admin-container">
+    <>
       <h2 className="admin-title">📜 Danh sách hồ sơ ({vehicles.length})</h2>
       {loading ? (
         <p className="loading-text">Đang tải...</p>
       ) : vehicles.length === 0 ? (
         <p className="loading-text">Chưa có hồ sơ nào</p>
       ) : (
-        <div className="table-container">
+        <div className="admin-table-wrapper">
           <table className="license-table">
             <thead>
               <tr>
@@ -35,12 +35,12 @@ const AdminVehicleTable = ({
                 <tr key={v.id}>
                   <td>{v.id}</td>
                   <td>{v.ownerName}</td>
-                  <td>{v.citizenId}</td>
+                  <td>{v.cccd}</td>
                   <td>{v.licensePlate}</td>
                   <td>
                     {v.brand} {v.model}
                   </td>
-                  <td>{v.year}</td>
+                  <td>{v.manufactureYear}</td>
                   <td
                     className={`status-cell status-${v.status
                       .toLowerCase()
@@ -73,9 +73,7 @@ const AdminVehicleTable = ({
                         </button>
                       </>
                     ) : (
-                      <small>
-                        Đã xử lý
-                      </small>
+                      <small>Đã xử lý</small>
                     )}
                   </td>
                 </tr>
@@ -84,7 +82,7 @@ const AdminVehicleTable = ({
           </table>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

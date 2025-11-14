@@ -7,15 +7,15 @@ const VehicleHistoryTable = ({
   setSelectedVehicle,
 }) => {
   return (
-    <div className="admin-container">
-      <h2 className="admin-title">📜 Lịch sử hồ sơ của bạn</h2>
+    <div className="history-section">
+      <h2 className="history-title">📜 Lịch sử hồ sơ của bạn</h2>
       {loading ? (
         <p className="loading-text">Đang tải...</p>
       ) : userVehicles.length === 0 ? (
         <p className="loading-text">Chưa có hồ sơ nào</p>
       ) : (
-        <div className="table-container">
-          <table className="license-table">
+        <div className="history-table-container">
+          <table className="history-table">
             <thead>
               <tr>
                 <th>ID</th>

@@ -63,28 +63,29 @@ body {
 }
 
 /* ========== ADMIN DASHBOARD ========== */
-/* Giữ tiêu đề và thông tin admin căn trái */
+.admin-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 20px auto 60px auto;
+  background: #202225;
+  padding: 30px 40px;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
 .admin-container h1,
 .admin-container p {
   text-align: center;
   margin-bottom: 16px;
 }
 
-.admin-container {
-  width: 100%;
-  max-width: 1300px;
-  margin: 20px auto 60px auto;
-  background: #202225;
-  padding: 30px 40px;
-  border-radius: 18px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
-}
-
 .admin-title {
   color: #4facfe;
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-bottom: 20px;
   text-align: center;
+  font-weight: 700;
 }
 
 .admin-info {
@@ -97,15 +98,24 @@ body {
   color: #fff;
 }
 
-/* ========== BẢNG DỮ LIỆU ========== */
+/* ========== WRAPPER CHO BẢNG ADMIN ========== */
+.admin-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+  margin-top: 15px;
+  background: #2a2d33;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== BẢNG DỮ LIỆU ADMIN ========== */
 .license-table {
   width: 100%;
-  border-collapse: collapse;
+  min-width: 900px;
+  border-collapse: separate;
+  border-spacing: 0;
   background: #2a2d33;
-  border-radius: 10px;
-  overflow: hidden;
-  font-size: 15px;
-  margin-top: 20px;
+  font-size: 14px;
 }
 
 .license-table thead {
@@ -113,15 +123,29 @@ body {
   color: #4facfe;
 }
 
-.license-table th,
-.license-table td {
+.license-table th {
   padding: 14px 12px;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  border-bottom: 2px solid #3a3d42;
+  white-space: nowrap;
 }
 
-.license-table tr:hover {
-  background: rgba(255, 255, 255, 0.04);
+.license-table td {
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
+}
+
+.license-table tbody tr {
+  background: #22252b;
+  transition: all 0.2s ease;
+}
+
+.license-table tbody tr:hover {
+  background: rgba(79, 172, 254, 0.08);
+  transform: scale(1.005);
 }
 
 .license-table a {
@@ -151,37 +175,50 @@ body {
   color: #f44336;
 }
 
-/* ========== HÀNH ĐỘNG ========== */
-button {
+/* ========== NÚT HÀNH ĐỘNG ADMIN ========== */
+.detail-btn,
+.btn-approve,
+.btn-reject {
   cursor: pointer;
   border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 15px;
-  font-weight: 500;
-  transition: all 0.25s ease;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin: 2px;
 }
 
-button:hover:not(:disabled) {
-  transform: translateY(-2px);
+.detail-btn {
+  background: transparent;
+  color: #4facfe;
+  border: 1px solid #4facfe;
 }
 
-.approve-btn {
+.detail-btn:hover {
+  background: #4facfe;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-approve {
   background-color: #28a745;
   color: #fff;
 }
 
-.approve-btn:hover {
+.btn-approve:hover {
   background-color: #2ecc71;
+  transform: translateY(-1px);
 }
 
-.reject-btn {
+.btn-reject {
   background-color: #dc3545;
   color: #fff;
 }
 
-.reject-btn:hover {
+.btn-reject:hover {
   background-color: #ff5a6e;
+  transform: translateY(-1px);
 }
 
 /* ========== TRẠNG THÁI LOAD ========== */
@@ -191,19 +228,23 @@ button:hover:not(:disabled) {
   font-style: italic;
 }
 
-/* ========== THANH CUỘN CHO BẢNG ========== */
-.table-container {
-  max-height: 480px;
-  overflow-y: auto;
-  border-radius: 10px;
-  margin-top: 10px;
+/* ========== THANH CUỘN CHỌ BẢNG ADMIN ========== */
+.admin-table-wrapper::-webkit-scrollbar {
+  height: 8px;
 }
 
-.table-container table thead th {
-  position: sticky;
-  top: 0;
-  background-color: #2a2d33;
-  z-index: 2;
+.admin-table-wrapper::-webkit-scrollbar-track {
+  background: #1a1c1f;
+  border-radius: 4px;
+}
+
+.admin-table-wrapper::-webkit-scrollbar-thumb {
+  background: #4facfe;
+  border-radius: 4px;
+}
+
+.admin-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #338af2;
 }
 
 /* ========== FORM NGƯỜI DÙNG ========== */
@@ -329,4 +370,22 @@ button:hover:not(:disabled) {
 
 .ipfs-link:hover {
   text-decoration: underline;
+}
+/* ========== SCROLL DỌC CHO MODAL ========== */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #1a1c1f;
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #4facfe;
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #338af2;
 }
