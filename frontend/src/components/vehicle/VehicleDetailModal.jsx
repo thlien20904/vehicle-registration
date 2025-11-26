@@ -65,6 +65,14 @@ const VehicleDetailModal = ({ vehicle, onClose }) => {
               {vehicle.status}
             </span>
           </p>
+          {vehicle.status === "TỪ CHỐI" && vehicle.rejectionReason && (
+            <p>
+              <strong>Lý do từ chối:</strong>{" "}
+              <span style={{ color: "#d32f2f" }}>
+                {vehicle.rejectionReason}
+              </span>
+            </p>
+          )}
         </div>
 
         <div className="modal-divider" />

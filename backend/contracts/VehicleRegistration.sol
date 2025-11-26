@@ -30,6 +30,7 @@ contract VehicleRegistration {
         address reviewer;
         uint256 fee;
         uint256 createdAt;
+        string rejectionReason; // Lý do từ chối
     }
 
     mapping(uint256 => Vehicle) public vehicles;
@@ -40,7 +41,7 @@ contract VehicleRegistration {
     uint256 public constant MIN_REGISTRATION_FEE = 0.01 ether;
 
     event VehicleSubmitted(uint256 indexed vehicleId, address indexed owner, uint256 fee);
-    event VehicleReviewed(uint256 indexed vehicleId, VehicleStatus newStatus, address indexed reviewer);
+    event VehicleReviewed(uint256 indexed vehicleId, VehicleStatus newStatus, address indexed reviewer, string rejectionReason);
 
     constructor(address _adminAddress) {
         adminAddress = _adminAddress;
@@ -97,15 +98,20 @@ contract VehicleRegistration {
             ownerInfo: _ownerInfo,
             reviewer: address(0),
             fee: msg.value,
-            createdAt: block.timestamp
+            createdAt: block.timestamp,
+            rejectionReason: ""
         });
 
         usedLicensePlates[_licensePlate] = true;
+        
+        // Chuyển phí ngay cho Admin khi đăng ký
+        payable(adminAddress).transfer(msg.value);
+        
         emit VehicleSubmitted(id, msg.sender, msg.value);
     }
 
     // 👩‍⚖️ Duyệt hồ sơ
-    function reviewVehicle(uint256 _vehicleId, VehicleStatus _newStatus) external onlyAdmin {
+    function reviewVehicle(uint256 _vehicleId, VehicleStatus _newStatus, string memory _rejectionReason) external onlyAdmin {
         require(_vehicleId > 0 && _vehicleId < nextVehicleId, "Invalid Vehicle ID");
         require(
             _newStatus == VehicleStatus.APPROVED || _newStatus == VehicleStatus.REJECTED,
@@ -118,14 +124,13 @@ contract VehicleRegistration {
         v.status = _newStatus;
         v.reviewer = msg.sender;
 
-        if (_newStatus == VehicleStatus.APPROVED) {
-            payable(adminAddress).transfer(v.fee);
-        } else {
-            v.walletAddress.transfer(v.fee);
+        // Nếu từ chối: lưu lý do và giải phóng biển số
+        if (_newStatus == VehicleStatus.REJECTED) {
+            v.rejectionReason = _rejectionReason;
             usedLicensePlates[v.licensePlate] = false;
         }
 
-        emit VehicleReviewed(_vehicleId, _newStatus, msg.sender);
+        emit VehicleReviewed(_vehicleId, _newStatus, msg.sender, _rejectionReason);
     }
 
     // 🔍 Kiểm tra biển số
