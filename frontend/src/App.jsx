@@ -35,16 +35,46 @@ function App() {
       setSigner(newSigner);
       setAccount(newAccount);
 
+      // Kiểm tra network
+      const network = await newProvider.getNetwork();
+      console.log("🌐 Network:", network);
+
+      if (network.chainId !== 31337) {
+        alert(
+          "⚠️ Vui lòng chuyển sang Hardhat Local Network (Chain ID: 31337)"
+        );
+        return;
+      }
+
+      // Kiểm tra contract tồn tại
+      const contractCode = await newProvider.getCode(contractAddress);
+      if (contractCode === "0x") {
+        alert(
+          "❌ Contract chưa được deploy! Vui lòng chạy: npx hardhat run scripts/deploy.js --network localhost"
+        );
+        return;
+      }
+
       const contract = new ethers.Contract(
         contractAddress,
         contractABI,
         newProvider
       );
-      const adminAddress = await contract.adminAddress();
-      setIsAdmin(newAccount.toLowerCase() === adminAddress.toLowerCase());
 
-      console.log("✅ Ví đã kết nối:", newAccount);
-      console.log("👑 Admin:", adminAddress);
+      try {
+        const adminAddress = await contract.adminAddress();
+        setIsAdmin(newAccount.toLowerCase() === adminAddress.toLowerCase());
+
+        console.log("✅ Ví đã kết nối:", newAccount);
+        console.log("👑 Admin:", adminAddress);
+        console.log("📝 Contract:", contractAddress);
+      } catch (contractError) {
+        console.error("❌ Lỗi gọi contract:", contractError);
+        alert(
+          "❌ Không thể kết nối với Smart Contract. Kiểm tra address và ABI!"
+        );
+        return;
+      }
     } catch (err) {
       console.error("❌ Lỗi kết nối ví:", err);
       alert("Không thể kết nối ví. Kiểm tra Metamask.");
@@ -56,12 +86,23 @@ function App() {
     if (!provider) return;
     setLoading(true);
     try {
+      // Kiểm tra contract tồn tại
+      const contractCode = await provider.getCode(contractAddress);
+      if (contractCode === "0x") {
+        console.error("❌ Contract chưa được deploy tại:", contractAddress);
+        setLoading(false);
+        return;
+      }
+
       const contract = new ethers.Contract(
         contractAddress,
         contractABI,
         provider
       );
+
       const ids = await contract.getAllVehicleIds();
+      console.log("🆔 Vehicle IDs:", ids);
+
       const details = await Promise.all(
         ids.map(async (id) => {
           const v = await contract.vehicles(id);
@@ -83,8 +124,12 @@ function App() {
         })
       );
       setVehicles(details);
+      console.log("✅ Đã tải", details.length, "phương tiện");
     } catch (err) {
       console.error("❌ Lỗi tải danh sách phương tiện:", err);
+      if (err.message.includes("CALL_EXCEPTION")) {
+        console.log("🔍 Kiểm tra: Contract address, Network, ABI");
+      }
     } finally {
       setLoading(false);
     }

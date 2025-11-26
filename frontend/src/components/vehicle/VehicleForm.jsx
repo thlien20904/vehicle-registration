@@ -13,13 +13,26 @@ const VehicleForm = ({
   setErrors,
   isSubmitting,
   handleSubmit,
+  fillSampleData,
   years,
 }) => {
   return (
     <div className="form-section">
-      <h2 className="main-title">🚗 Đăng ký phương tiện</h2>
+      <div className="form-header">
+        <h2 className="main-title">🚗 Đăng ký phương tiện</h2>
+        <button
+          type="button"
+          className="fill-sample-btn"
+          onClick={fillSampleData}
+          title="Điền thông tin mẫu để test nhanh"
+        >
+          ⚡ Fill mẫu
+        </button>
+      </div>
       <form className="vehicle-form" onSubmit={handleSubmit}>
         <h4>Thông tin chủ sở hữu</h4>
+
+        {/* ====== INPUT THÔNG TIN CHỦ SỞ HỮU ====== */}
         {["ownerName", "cccd", "addressInfo", "phone"].map((key) => (
           <div key={key} className="form-group">
             <input
@@ -37,36 +50,33 @@ const VehicleForm = ({
                 const value = e.target.value;
                 setForm({ ...form, [key]: value });
 
-                // Xóa lỗi nếu người dùng nhập lại đúng
                 let msg = "";
+
                 if (key === "ownerName") {
                   const trimmed = value.trim();
                   if (!trimmed || trimmed.split(/\s+/).length < 2) {
-                    msg = "Họ tên phải có ít nhất 2 từ (chỉ chữ cái và dấu).";
-                  } else if (
-                    !/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂ ƯỰỲỴÝỶỸ\s]+$/.test(
-                      trimmed
-                    )
-                  ) {
+                    msg = "Họ tên phải có ít nhất 2 từ.";
+                  } else if (!/^[a-zA-ZÀ-ỹ\s]+$/.test(trimmed)) {
                     msg = "Họ tên chỉ chứa chữ cái và dấu tiếng Việt.";
                   }
-                } else if (key === "cccd") {
+                }
+
+                if (key === "cccd") {
                   if (!/^\d{12}$/.test(value) || value.startsWith("000")) {
-                    msg = "CCCD phải đúng 12 chữ số (không bắt đầu bằng 000).";
+                    msg = "CCCD phải đúng 12 chữ số và không bắt đầu bằng 000.";
                   }
-                } else if (key === "addressInfo") {
-                  const trimmed = value.trim();
-                  if (!trimmed || trimmed.length < 10) {
+                }
+
+                if (key === "addressInfo") {
+                  if (!value.trim() || value.trim().length < 10) {
                     msg = "Địa chỉ phải có ít nhất 10 ký tự.";
                   }
-                } else if (key === "phone") {
+                }
+
+                if (key === "phone") {
                   const digitsOnly = value.replace(/\D/g, "");
-                  if (
-                    !/^(0[3|5|7|8|9][0-9]{8})$/.test(digitsOnly) ||
-                    digitsOnly.length !== 10
-                  ) {
-                    msg =
-                      "SĐT phải đúng 10 chữ số, bắt đầu bằng 03/05/07/08/09 (VD: 0321234567).";
+                  if (!/^(0[3|5|7|8|9]\d{8})$/.test(digitsOnly)) {
+                    msg = "SĐT phải 10 số, bắt đầu bằng 03/05/07/08/09.";
                   }
                 }
 
@@ -75,34 +85,32 @@ const VehicleForm = ({
               onBlur={(e) => {
                 const value = e.target.value;
                 let msg = "";
+
                 if (key === "ownerName") {
                   const trimmed = value.trim();
                   if (!trimmed || trimmed.split(/\s+/).length < 2) {
-                    msg = "Họ tên phải có ít nhất 2 từ (chỉ chữ cái và dấu).";
-                  } else if (
-                    !/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂ ƯỰỲỴÝỶỸ\s]+$/.test(
-                      trimmed
-                    )
-                  ) {
+                    msg = "Họ tên phải có ít nhất 2 từ.";
+                  } else if (!/^[a-zA-ZÀ-ỹ\s]+$/.test(trimmed)) {
                     msg = "Họ tên chỉ chứa chữ cái và dấu tiếng Việt.";
                   }
-                } else if (key === "cccd") {
+                }
+
+                if (key === "cccd") {
                   if (!/^\d{12}$/.test(value) || value.startsWith("000")) {
-                    msg = "CCCD phải đúng 12 chữ số (không bắt đầu bằng 000).";
+                    msg = "CCCD phải đúng 12 chữ số và không bắt đầu bằng 000.";
                   }
-                } else if (key === "addressInfo") {
-                  const trimmed = value.trim();
-                  if (!trimmed || trimmed.length < 10) {
+                }
+
+                if (key === "addressInfo") {
+                  if (!value.trim() || value.trim().length < 10) {
                     msg = "Địa chỉ phải có ít nhất 10 ký tự.";
                   }
-                } else if (key === "phone") {
+                }
+
+                if (key === "phone") {
                   const digitsOnly = value.replace(/\D/g, "");
-                  if (
-                    !/^(0[3|5|7|8|9][0-9]{8})$/.test(digitsOnly) ||
-                    digitsOnly.length !== 10
-                  ) {
-                    msg =
-                      "SĐT phải đúng 10 chữ số, bắt đầu bằng 03/05/07/08/09 (VD: 0321234567).";
+                  if (!/^(0[3|5|7|8|9]\d{8})$/.test(digitsOnly)) {
+                    msg = "SĐT phải đúng định dạng.";
                   }
                 }
 
@@ -113,7 +121,9 @@ const VehicleForm = ({
           </div>
         ))}
 
+        {/* ====== THÔNG TIN XE ====== */}
         <h4>Thông tin phương tiện</h4>
+
         {["plateNumber", "vehicleBrand", "model", "color"].map((key) => (
           <div key={key} className="form-group">
             <input
@@ -128,58 +138,49 @@ const VehicleForm = ({
               }
               value={form[key]}
               onChange={(e) => {
-                const value = e.target.value.toUpperCase(); // Tự uppercase cho biển số
+                const value =
+                  key === "plateNumber"
+                    ? e.target.value.toUpperCase() // chỉ upper biển số
+                    : e.target.value;
+
                 setForm({ ...form, [key]: value });
 
-                // Xóa lỗi khi người dùng sửa đúng
                 let msg = "";
+
                 if (key === "plateNumber") {
-                  if (!/^\d{2}[A-Z]{1,2}-\d{4,5}$/.test(value)) {
-                    // Cập nhật regex: 2 số + 1-2 chữ + - + 4-5 số
+                  // regex chuẩn biển số VN
+                  const plateRegex = /^\d{2}[A-Z]\d?-?\d{4,5}$/i;
+
+                  if (!plateRegex.test(value)) {
                     msg =
                       "Biển số không hợp lệ (VD: 29A-12345 hoặc 30K1-12345).";
                   }
-                } else if (key === "vehicleBrand") {
-                  const trimmed = value.trim();
-                  if (!trimmed || trimmed.length < 2) {
-                    msg = "Hãng xe phải có ít nhất 2 ký tự.";
-                  }
-                } else if (key === "model") {
-                  const trimmed = value.trim();
-                  if (!trimmed || trimmed.length < 2) {
-                    msg = "Model phải có ít nhất 2 ký tự.";
-                  }
-                } else if (key === "color") {
-                  const trimmed = value.trim();
-                  if (!trimmed || trimmed.length < 2) {
-                    msg = "Màu sắc phải có ít nhất 2 ký tự.";
+                } else {
+                  // brand / model / color
+                  if (!value.trim() || value.trim().length < 2) {
+                    msg = "Trường này phải có ít nhất 2 ký tự.";
                   }
                 }
 
                 setErrors((prev) => ({ ...prev, [key]: msg }));
               }}
               onBlur={(e) => {
-                const value = e.target.value.toUpperCase();
+                const value =
+                  key === "plateNumber"
+                    ? e.target.value.toUpperCase()
+                    : e.target.value;
+
                 let msg = "";
+
                 if (key === "plateNumber") {
-                  if (!/^\d{2}[A-Z]{1,2}-\d{4,5}$/.test(value)) {
-                    msg =
-                      "Biển số không hợp lệ (VD: 29A-12345 hoặc 30K1-12345).";
+                  const plateRegex = /^\d{2}[A-Z]\d?-?\d{4,5}$/i;
+
+                  if (!plateRegex.test(value)) {
+                    msg = "Biển số không hợp lệ.";
                   }
-                } else if (key === "vehicleBrand") {
-                  const trimmed = value.trim();
-                  if (!trimmed || trimmed.length < 2) {
-                    msg = "Hãng xe phải có ít nhất 2 ký tự.";
-                  }
-                } else if (key === "model") {
-                  const trimmed = value.trim();
-                  if (!trimmed || trimmed.length < 2) {
-                    msg = "Model phải có ít nhất 2 ký tự.";
-                  }
-                } else if (key === "color") {
-                  const trimmed = value.trim();
-                  if (!trimmed || trimmed.length < 2) {
-                    msg = "Màu sắc phải có ít nhất 2 ký tự.";
+                } else {
+                  if (!value.trim() || value.trim().length < 2) {
+                    msg = "Trường này phải có ít nhất 2 ký tự.";
                   }
                 }
 
@@ -190,6 +191,7 @@ const VehicleForm = ({
           </div>
         ))}
 
+        {/* ====== NĂM SẢN XUẤT ====== */}
         <div className="form-group">
           <select
             value={form.manufactureYear}
@@ -209,7 +211,9 @@ const VehicleForm = ({
           )}
         </div>
 
+        {/* ====== TÀI LIỆU CCCD ====== */}
         <h4>Tài liệu</h4>
+
         <div className="cccd-upload">
           {[
             {
@@ -244,7 +248,6 @@ const VehicleForm = ({
                     onChange={(e) => {
                       const file = e.target.files[0];
                       if (file && file.size > 5 * 1024 * 1024) {
-                        // Thêm check size <5MB
                         alert("File quá lớn! Giới hạn 5MB.");
                         return;
                       }
@@ -257,8 +260,10 @@ const VehicleForm = ({
             </div>
           ))}
         </div>
+
         {errors.cccdFiles && <p className="error">{errors.cccdFiles}</p>}
 
+        {/* ====== HÓA ĐƠN ====== */}
         <div className="form-group">
           <label>📄 Hóa đơn mua bán</label>
           <input
@@ -267,7 +272,6 @@ const VehicleForm = ({
             onChange={(e) => {
               const file = e.target.files[0];
               if (file && file.size > 10 * 1024 * 1024) {
-                // Thêm check size <10MB cho PDF
                 alert("File quá lớn! Giới hạn 10MB.");
                 return;
               }

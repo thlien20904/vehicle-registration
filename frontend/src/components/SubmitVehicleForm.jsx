@@ -40,6 +40,26 @@ const SubmitVehicleForm = ({ signer, account, provider }) => {
 
   const years = Array.from({ length: 46 }, (_, i) => 1980 + i);
 
+  // ===== FILL THÔNG TIN MẪU =====
+  const fillSampleData = () => {
+    setForm({
+      ownerName: "Nguyễn Văn A",
+      cccd: "079201234567",
+      addressInfo: "123 Đường ABC, Quận 1, TP.HCM",
+      phone: "0321234567",
+      plateNumber: "29A1-12345",
+      vehicleBrand: "Honda",
+      model: "Vision 2024",
+      color: "Đỏ",
+      manufactureYear: "2024",
+    });
+
+    // Xóa lỗi khi fill mẫu
+    setErrors({});
+
+    alert("✅ Đã điền thông tin mẫu! Bạn có thể chỉnh sửa các trường nếu cần.");
+  };
+
   const getReadProvider = () =>
     provider ||
     (signer
@@ -54,6 +74,14 @@ const SubmitVehicleForm = ({ signer, account, provider }) => {
     if (!readProvider || !account) return;
     setLoading(true);
     try {
+      // Kiểm tra contract tồn tại
+      const contractCode = await readProvider.getCode(contractAddress);
+      if (contractCode === "0x") {
+        console.error("❌ Contract chưa được deploy tại:", contractAddress);
+        setLoading(false);
+        return;
+      }
+
       const contract = new ethers.Contract(
         contractAddress,
         contractABI,
@@ -80,8 +108,12 @@ const SubmitVehicleForm = ({ signer, account, provider }) => {
           phone: v.ownerInfo?.phone || "",
         }));
       setUserVehicles(userData);
+      console.log("✅ Đã tải", userData.length, "xe của user");
     } catch (err) {
       console.error("❌ Lỗi tải danh sách xe:", err);
+      if (err.message.includes("CALL_EXCEPTION")) {
+        console.log("🔍 Kiểm tra: Contract address, Network, ABI");
+      }
     } finally {
       setLoading(false);
     }
@@ -215,6 +247,7 @@ const SubmitVehicleForm = ({ signer, account, provider }) => {
         setErrors={setErrors}
         isSubmitting={isSubmitting}
         handleSubmit={handleSubmit}
+        fillSampleData={fillSampleData}
         years={years}
       />
 
