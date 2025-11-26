@@ -220,7 +220,7 @@ const SubmitVehicleForm = ({ signer, account, provider, onSubmission }) => {
                 : ""
             }<p>Biển số đã được giải phóng, bạn có thể đăng ký lại</p>`,
         showConfirmButton: false,
-        timer: 4000,
+        timer: 2500,
         timerProgressBar: true,
       });
     };

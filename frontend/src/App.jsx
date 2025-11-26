@@ -346,7 +346,7 @@ function App() {
             icon: "success",
             title: "Hồ sơ mới!",
             text: `Xe #${idNum} vừa được đăng ký`,
-            timer: 2000,
+            timer: 2500,
             showConfirmButton: false,
           });
         }
@@ -379,7 +379,7 @@ function App() {
                   }</small>`
                 : ""
             }`,
-            timer: 5000,
+            timer: 2500,
             showConfirmButton: true,
           });
         }
