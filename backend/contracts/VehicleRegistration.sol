@@ -37,14 +37,14 @@ contract VehicleRegistration {
         string rejectionReason; // Lý do từ chối (nếu có)
     }
 
-    mapping(uint256 => Vehicle) public vehicles;
-    mapping(string => bool) private usedLicensePlates;
+    mapping(uint256 => Vehicle) public vehicles;//truy cập thông tin xe theo ID
+    mapping(string => bool) private usedLicensePlates;//đánh dấu biển số đã dùng để tránh trùng lặp
 
     uint256 public nextVehicleId = 1;
     address public adminAddress;
     uint256 public constant MIN_REGISTRATION_FEE = 0.01 ether;
 
-    event VehicleSubmitted(uint256 indexed vehicleId, address indexed owner, uint256 fee);
+    event VehicleSubmitted(uint256 indexed vehicleId, address indexed owner, uint256 fee); //realtime update UI.
     event VehicleReviewed(uint256 indexed vehicleId, VehicleStatus newStatus, address indexed reviewer, string rejectionReason);
 
     constructor(address _adminAddress) {
@@ -106,7 +106,7 @@ contract VehicleRegistration {
             createdAt: block.timestamp,
             rejectionReason: ""
         });
-
+// Đánh dấu biển số đã dùng
         usedLicensePlates[_licensePlate] = true;
         
         // Chuyển phí ngay cho Admin khi đăng ký

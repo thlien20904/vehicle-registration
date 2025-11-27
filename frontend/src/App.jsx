@@ -390,7 +390,7 @@ function App() {
     if (provider && allVehicleIds.length > 0) fetchVehicles();
   }, [provider, allVehicleIds, fetchVehicles]);
 
-  // CHỈ SỬA ĐOẠN NÀY THÔI – REALTIME 2 CHIỀU SIÊU MƯỢT
+  // – REALTIME 2 CHIỀU SIÊU MƯỢT
   useEffect(() => {
     // useEffect: Setup listeners realtime (submitted/reviewed)
     if (!contractRef.current || !account) return; // Nếu thiếu contract/account

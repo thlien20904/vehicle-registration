@@ -1,4 +1,31 @@
 
+🧑‍💼 User → Smart Contract
+
+Nhập thông tin & upload file
+
+Gửi giao dịch registerVehicle + phí
+
+Contract validate
+
+Lưu thông tin xe & đánh dấu biển số
+
+Chuyển phí cho admin
+
+Phát event VehicleSubmitted
+
+👩‍⚖️ Admin → Smart Contract
+
+Lấy danh sách hồ sơ
+
+Xem chi tiết
+
+Duyệt hoặc từ chối hồ sơ
+
+Contract cập nhật trạng thái
+
+Giải phóng biển số nếu bị từ chối
+
+Phát event VehicleReviewed
 
 ## 📊 QUY TRÌNH HOẠT ĐỘNG CHI TIẾT
 
